@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parking Spots Map</title>
+    <!-- Add viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <style>
+        /* Reset default margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            padding: 10px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        /* Make map container responsive */
+        #map {
+            height: calc(100vh - 60px); /* Full viewport height minus header */
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.2rem;
+                padding: 8px;
+            }
+
+            /* Ensure popups are readable on mobile */
+            .leaflet-popup-content {
+                font-size: 14px;
+                margin: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Available Parking Spots</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script>
+        // Initialize the map with Kasaragod coordinates
+        const map = L.map('map').setView([12.4996, 74.9869], 20);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Define custom icons for different statuses
+        const icons = {
+            available: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            }),
+            closed: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            }),
+            unavailable: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+        };
+
+        // Function to load parking spots
+        function loadParkingSpots() {
+            fetch('/api/parking-spots/')
+                .then(response => response.json())
+                .then(spots => {
+                    console.log('Received spots:', spots);  // Debug line
+                    
+                    // Clear existing markers
+                    map.eachLayer((layer) => {
+                        if (layer instanceof L.Marker) {
+                            map.removeLayer(layer);
+                        }
+                    });
+
+                    // Add new markers
+                    spots.forEach(spot => {
+                        console.log('Adding marker for:', spot);  // Debug line
+                        const marker = L.marker([spot.lat, spot.lng], {
+                            icon: icons[spot.status]
+                        })
+                            .addTo(map)
+                            .bindPopup(`
+                                <b>${spot.name}</b><br>
+                                Spot Number: ${spot.number}<br>
+                                Status: <span style="color: ${
+                                    spot.status === 'available' ? 'green' : 
+                                    spot.status === 'closed' ? 'black' : 'red'
+                                };">${spot.status}</span>
+                            `);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading spots:', error);  // Debug line
+                });
+        }
+
+        // Load spots initially
+        loadParkingSpots();
+
+        // Refresh spots every 30 seconds
+        setInterval(loadParkingSpots, 5000);
+
+        // Add location button
+        L.control.locate({
+            position: 'bottomright',
+            strings: {
+                title: "Show my location"
+            }
+        }).addTo(map);
+    </script>
+</body>
+</html> 
