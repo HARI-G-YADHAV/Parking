@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Slot
+from .models import ParkingSpot
 
-@admin.register(Slot)
-class SlotAdmin(admin.ModelAdmin):
-    list_display = ('slot_id', 'slot_name', 'status', 'created_time')
-    list_filter = ('status',)
-    search_fields = ('slot_name',)
-    ordering = ('created_time',)
+@admin.register(ParkingSpot)
+class ParkingSpotAdmin(admin.ModelAdmin):
+    list_display = ['name', 'latitude', 'longitude', 'status', 'created_at', 'updated_at']
+    list_filter = ['status']
+    search_fields = ['name']
+    ordering = ('id',)
