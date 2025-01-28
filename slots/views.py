@@ -28,15 +28,28 @@ def user_login(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-def get_parking_spots(request):
-    # API endpoint to get parking spots data
+
+
+def parking_spots_api(request):
+    vehicle_type = request.GET.get('vehicle_type')
     spots = ParkingSpot.objects.all()
-    data = [{
-        'id': spot.id,
+    
+    if vehicle_type:
+        spots = spots.filter(vehicle_type=vehicle_type)
+    
+    spots_data = [{
+        'number': spot.number,
+        'name': spot.name,
         'lat': spot.latitude,
         'lng': spot.longitude,
-        'name': spot.name,
         'status': spot.status,
-        'number': spot.number
+        'vehicle_type': spot.vehicle_type
     } for spot in spots]
-    return JsonResponse(data, safe=False)
+    
+    return JsonResponse(spots_data, safe=False)
+
+def home(request):
+    return render(request, 'slots/home.html')
+
+def front(request):
+    return render(request, 'slots/front.html')

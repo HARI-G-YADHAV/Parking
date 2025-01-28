@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parking Selection</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,26 +27,28 @@
             justify-content: center;
             align-items: center;
             margin: 20px 0;
-            gap: 20px;
+            gap: 40px;
         }
 
         .round-button {
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             background-color: #007BFF;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
-            font-size: 24px;
+            font-size: 64px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            text-decoration: none;
         }
 
         .round-button:hover {
             transform: scale(1.1);
             background-color: #0056b3;
+            color: white;
         }
 
         .advertisement {
@@ -69,9 +71,9 @@
 
         @media (max-width: 768px) {
             .round-button {
-                width: 80px;
-                height: 80px;
-                font-size: 18px;
+                width: 120px;
+                height: 120px;
+                font-size: 48px;
             }
         }
     </style>
@@ -84,12 +86,12 @@
     <h1 class="text-center my-4">Select Your Vehicle</h1>
 
     <div class="button-container">
-        <div class="round-button">
-            <i class="fas fa-motorcycle"></i>
-        </div>
-        <div class="round-button">
-            <i class="fas fa-car"></i>
-        </div>
+        <a href="{% url 'home' %}?vehicle_type=bike" class="round-button">
+            <i class="fa-solid fa-motorcycle"></i>
+        </a>
+        <a href="{% url 'home' %}?vehicle_type=car" class="round-button">
+            <i class="fa-solid fa-car"></i>
+        </a>
     </div>
 
     <div class="advertisement">
