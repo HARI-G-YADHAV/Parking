@@ -84,12 +84,12 @@
     <h1 class="text-center my-4">Select Your Vehicle</h1>
 
     <div class="button-container">
-        <div class="round-button">
+        <a href="{% url 'home' %}?vehicle_type=bike" class="round-button">
             <i class="fas fa-motorcycle"></i>
-        </div>
-        <div class="round-button">
+        </a>
+        <a href="{% url 'home' %}?vehicle_type=car" class="round-button">
             <i class="fas fa-car"></i>
-        </div>
+        </a>
     </div>
 
     <div class="advertisement">
