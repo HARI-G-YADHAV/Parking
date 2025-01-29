@@ -16,7 +16,10 @@
             <a class="navbar-brand" href="#">Security Dashboard</a>
             <div class="ms-auto">
                 <span class="text-light">Welcome, {{ request.user.username }}</span>
-                <a href="{% url 'logout' %}" class="btn btn-outline-light ms-3">Logout</a>
+                <form method="post" action="{% url 'logout' %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light ms-3">Logout</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -41,7 +44,7 @@
                 <form method="post" class="row g-3">
                     {% csrf_token %}
                     <div class="col-md-4">
-                        <label for="spot_number" class="form-label">Spot Number</label>
+                        <label for="spot_number" class="form-label">Spot</label>
                         <select class="form-select" id="spot_number" name="spot_number" required>
                             <option value="">Select a spot...</option>
                             {% for spot in parking_spots %}
