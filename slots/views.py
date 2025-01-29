@@ -7,9 +7,13 @@ from django.contrib.auth.forms import AuthenticationForm
 
 
 # Create your views here.
-def home_page(request):
+
+
+def home(request):
     return render(request, 'slots/home.html')
 
+def front(request):
+    return render(request, 'slots/front.html')
 
 
 
@@ -32,8 +36,7 @@ def parking_spots_api(request):
     return JsonResponse(spots_data, safe=False)
 
 
-def front(request):
-    return render(request, 'slots/front.html')
+
 
 @login_required
 def security_page(request):
@@ -55,26 +58,4 @@ def user_login(request):
 
 
 
-def parking_spots_api(request):
-    vehicle_type = request.GET.get('vehicle_type')
-    spots = ParkingSpot.objects.all()
-    
-    if vehicle_type:
-        spots = spots.filter(vehicle_type=vehicle_type)
-    
-    spots_data = [{
-        'number': spot.number,
-        'name': spot.name,
-        'lat': spot.latitude,
-        'lng': spot.longitude,
-        'status': spot.status,
-        'vehicle_type': spot.vehicle_type
-    } for spot in spots]
-    
-    return JsonResponse(spots_data, safe=False)
 
-def home(request):
-    return render(request, 'slots/home.html')
-
-def front(request):
-    return render(request, 'slots/front.html')
