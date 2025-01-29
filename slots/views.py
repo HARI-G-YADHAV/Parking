@@ -4,6 +4,7 @@ from .models import ParkingSpot
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 
 
 # Create your views here.
@@ -39,8 +40,21 @@ def parking_spots_api(request):
 
 
 @login_required
-def security_page(request):
-    return render(request, 'registration/security.html')
+def security_view(request):
+    if request.method == 'POST':
+        spot_number = request.POST.get('spot_number')
+        new_status = request.POST.get('status')
+        
+        try:
+            spot = ParkingSpot.objects.get(number=spot_number)
+            spot.status = new_status
+            spot.save()
+            messages.success(request, f'Spot {spot_number} status updated successfully!')
+        except ParkingSpot.DoesNotExist:
+            messages.error(request, f'Spot {spot_number} not found!')
+            
+    parking_spots = ParkingSpot.objects.all().order_by('number')
+    return render(request, 'registration/security.html', {'parking_spots': parking_spots})
 
 def user_login(request):
     if request.method == 'POST':

@@ -3,10 +3,167 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Security Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Welcome to the Security Page!</h1>
-    <p>You have successfully logged in.</p>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Security Dashboard</a>
+            <div class="ms-auto">
+                <span class="text-light">Welcome, {{ request.user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light ms-3">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Messages Section -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Quick Status Update Form -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Update Parking Spot Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-4">
+                        <label for="spot_number" class="form-label">Spot Number</label>
+                        <select class="form-select" id="spot_number" name="spot_number" required>
+                            <option value="">Select a spot...</option>
+                            {% for spot in parking_spots %}
+                                <option value="{{ spot.number }}">{{ spot.number }} - {{ spot.name }} ({{ spot.vehicle_type|title }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">New Status</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="available">Available</option>
+                            <option value="closed">Closed</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Parking Spots Table -->
+        <div class="card">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Parking Spots Overview</h5>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light btn-sm" id="showAll">All</button>
+                    <button type="button" class="btn btn-light btn-sm" id="showCars">Cars</button>
+                    <button type="button" class="btn btn-light btn-sm" id="showBikes">Bikes</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Spot Number</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for spot in parking_spots %}
+                            <tr class="spot-row" data-type="{{ spot.vehicle_type }}">
+                                <td>{{ spot.number }}</td>
+                                <td>{{ spot.name }}</td>
+                                <td>
+                                    <span class="badge {% if spot.vehicle_type == 'car' %}bg-info{% else %}bg-success{% endif %}">
+                                        {{ spot.vehicle_type|title }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if spot.status == 'available' %}bg-success
+                                        {% elif spot.status == 'closed' %}bg-danger
+                                        {% else %}bg-warning{% endif %}">
+                                        {{ spot.status|title }}
+                                    </span>
+                                </td>
+                                <td>{{ spot.updated_at|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary edit-btn" 
+                                            data-spot-number="{{ spot.number }}"
+                                            data-spot-status="{{ spot.status }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Auto dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+
+            // Filter buttons functionality
+            $('#showAll').click(function() {
+                $('.spot-row').show();
+            });
+            
+            $('#showCars').click(function() {
+                $('.spot-row').hide();
+                $('.spot-row[data-type="car"]').show();
+            });
+            
+            $('#showBikes').click(function() {
+                $('.spot-row').hide();
+                $('.spot-row[data-type="bike"]').show();
+            });
+
+            // Edit button functionality
+            $('.edit-btn').click(function() {
+                const spotNumber = $(this).data('spot-number');
+                const spotStatus = $(this).data('spot-status');
+                
+                // Populate the form
+                $('#spot_number').val(spotNumber);
+                $('#status').val(spotStatus);
+                
+                // Scroll to form
+                $('html, body').animate({
+                    scrollTop: $("#spot_number").offset().top - 100
+                }, 500);
+            });
+        });
+    </script>
 </body>
 </html>
