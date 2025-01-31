@@ -18,7 +18,7 @@
         }
 
         header {
-            background: url('/static/images/header.jpg') no-repeat center/cover;
+            background: url('{% static "images/header.jpg" %}') no-repeat center/cover;
             height: 200px;
         }
 
@@ -59,6 +59,27 @@
             text-align: center;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            height: 200px;
+        }
+
+        .ad-content {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            animation: scrollAd 25s linear infinite ;
+            width: 100%;
+        }
+
+        .ad-content img {
+            width: 100%;
+            height: auto;
+        }
+
+        @keyframes scrollAd {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
 
         footer {
@@ -93,9 +114,11 @@
             <i class="fa-solid fa-car"></i>
         </a>
     </div>
+    
     <div class="advertisement">
-        <h2>Advertisement</h2>
-        <p>Your ad content goes here!</p>
+        <div class="ad-content">
+            <img src="{% static 'images/ad.jpg' %}" alt="Advertisement">
+        </div>
     </div>
 </div>
 
