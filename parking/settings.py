@@ -72,6 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "parking.wsgi.app"
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
