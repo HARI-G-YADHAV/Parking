@@ -1,3 +1,3 @@
-from django.core.asgi import get_asgi_application
+from django.core.wsgi import get_wsgi_application
 
-app = get_asgi_application()
+app = get_wsgi_application()
