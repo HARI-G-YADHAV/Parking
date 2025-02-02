@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "parking.wsgi.app"
+WSGI_APPLICATION = "parking.wsgi.application"
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
