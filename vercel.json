@@ -3,8 +3,7 @@
   "builds": [
     {
       "src": "parking/wsgi.py",
-      "use": "@vercel/python",
-      "buildCommand": "python manage.py collectstatic --noinput"
+      "use": "@vercel/python"
     }
   ],
   "routes": [
