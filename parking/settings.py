@@ -82,14 +82,16 @@ import environ
 env = environ.Env()
 environ.Env.read_env()  # This will load variables from the .env file
 
+DATABASE_URL = os.getenv('SUPABASE_DATABASE_URL')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+        'NAME': DATABASE_URL.split('/')[-1],  # Extract the DB name from the URL
+        'USER': DATABASE_URL.split(':')[1].split('//')[1],  # Extract user from URL
+        'PASSWORD': DATABASE_URL.split(':')[2].split('@')[0],  # Extract password
+        'HOST': DATABASE_URL.split('@')[1].split(':')[0],  # Extract host
+        'PORT': DATABASE_URL.split(':')[3],  # Extract port
     }
 }
 
