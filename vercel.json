@@ -5,5 +5,8 @@
       "src": "/(.*)",
       "dest": "parking/wsgi.py"
     }
-  ]
+  ],
+  "hooks": {
+    "postinstall": "pip install django-environ"
+  }
 }
