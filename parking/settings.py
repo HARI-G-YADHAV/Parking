@@ -72,17 +72,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "parking.wsgi.application"
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+import environ
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env()
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -122,6 +132,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'media/'
