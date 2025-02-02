@@ -1,3 +1,3 @@
-from django.core.asgi import application
+from parking.asgi import application
 
 app = application
