@@ -1,3 +1,3 @@
-from django.core.asgi import get_asgi_application
+from django.core.asgi import application
 
-app = get_asgi_application()
+app = application
