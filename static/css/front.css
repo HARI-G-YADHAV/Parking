@@ -3,43 +3,43 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background-color: #4caf50;
+    background-color: #638f65;
 }
 
 header {
     background: url('/static/images/banner2.png') no-repeat center/cover;
     height: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .heading1 {
-    color: red; 
+    color: #406bfe; 
     text-align: center;
     font-size: 3.2rem; 
-    font-weight: 900;
+    font-weight: bolder;
     text-transform: uppercase;
     padding: 15px 10px; 
     display: inline-block;
-    border-radius: 8px;
 }    
 
 .button-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    background-color: #e7cb2b;
+    width: 60%;
+    background-color: #d9f9d9;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap; 
-    margin: 80px 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    border-radius: 8px;
+    margin: 80px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
 }
 
 .round-button {
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    background-color: red;
+    background-color: #e30808;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -49,11 +49,12 @@ header {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, background-color 0.2s;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .round-button:hover {
     transform: scale(1.1);
-    background-color: #0056b3;
+    background-color: #00d363;
 }
 
 .btn{
@@ -89,34 +90,35 @@ footer {
     header {
         background: url('/static/images/header.jpg') no-repeat center/cover;
         height: 180px; 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-bottom: 5px solid black;
     }
 
     .heading1 {
-        color: red; 
+        color: white; 
         text-align: center;
         font-size: 2.2rem; 
-        font-weight: 900;
+        font-weight: bolder;
         text-transform: uppercase;
         padding: 15px 10px; 
         display: inline-block;
-        background-color: white;
+        background-color: #406bfe;
         border-radius: 8px;
+        border: 2px solid black;
     }    
 
     .round-button {
-        width: 90px; 
-        height: 90px;
+        width: 100px; 
+        height: 100px;
         font-size: 1.8rem;
         margin-bottom: 20px;
     }
 
     .button-container {
+        width: 80%;
         padding: 20px;
         align-items: center;
         text-align: center;  
-        background-color: #e7cb2b;
-        border-radius: 8px;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
     }
 }
 
@@ -124,6 +126,7 @@ footer {
     header {
         background: url('/static/images/header.jpg') no-repeat center/cover;
         height: 180px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .heading1 {
@@ -133,16 +136,13 @@ footer {
     }    
 
     .round-button {
-        width: 80px; 
-        height: 80px;
         font-size: 1.5rem;
         margin-bottom: 15px; 
     }
 
     .button-container {
+        width: 80%;
         padding: 15px;
         border-radius: 6px; 
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
     }
 }
-

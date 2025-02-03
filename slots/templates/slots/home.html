@@ -3,12 +3,10 @@
 <html>
 <head>
     <title>Parking Spots Map</title>
-    <!-- Add viewport meta tag for mobile responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <style>
-        /* Reset default margins and padding */
         * {
             margin: 0;
             padding: 0;
@@ -25,21 +23,18 @@
             font-size: 1.5rem;
         }
 
-        /* Make map container responsive */
         #map {
-            height: calc(100vh - 60px); /* Full viewport height minus header */
+            height: calc(100vh - 60px);
             width: 100%;
             z-index: 1;
         }
 
-        /* Mobile-specific styles */
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.2rem;
                 padding: 8px;
             }
 
-            /* Ensure popups are readable on mobile */
             .leaflet-popup-content {
                 font-size: 14px;
                 margin: 8px;
@@ -52,24 +47,20 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
     <script>
-        // Get vehicle type from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const vehicleType = urlParams.get('vehicle_type');
 
-        // Update title based on vehicle type
         document.querySelector('h1').textContent = 
             `Available ${vehicleType ? vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1) : ''} Parking Spots`;
 
-        // Initialize the map with Kasaragod coordinates
         const map = L.map('map').setView([12.266185434079473, 75.1293574828205], 20);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Define custom icons for different statuses
         const icons = {
             available: L.icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -97,50 +88,69 @@
             })
         };
 
-        // Function to load parking spots
         function loadParkingSpots() {
             fetch(`/api/parking-spots/?vehicle_type=${vehicleType}`)
                 .then(response => response.json())
                 .then(spots => {
                     console.log('Received spots:', spots);
-                    
-                    // Clear existing markers
+
                     map.eachLayer((layer) => {
                         if (layer instanceof L.Marker) {
                             map.removeLayer(layer);
                         }
                     });
 
-                    // Add new markers
                     spots.forEach(spot => {
                         console.log('Adding marker for:', spot);
-                        const marker = L.marker([spot.lat, spot.lng], {
+                        L.marker([spot.lat, spot.lng], {
                             icon: icons[spot.status]
                         })
-                            .addTo(map)
-                            .bindPopup(`
-                                <b>${spot.name}</b><br>
-                                Spot Number: ${spot.number}<br>
-                                Vehicle Type: ${spot.vehicle_type}<br>
-                                Status: <span style="color: ${
-                                    spot.status === 'available' ? 'green' : 
-                                    spot.status === 'closed' ? 'black' : 'red'
-                                };">${spot.status}</span>
-                            `);
+                        .addTo(map)
+                        .bindPopup(`
+                            <b>${spot.name}</b><br>
+                            Spot Number: ${spot.number}<br>
+                            Vehicle Type: ${spot.vehicle_type}<br>
+                            Direction: <a href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                style="color: blue; text-decoration: none; font-weight: bold;">
+                                Click Here
+                            </a><br>
+                            Status: <span style="color: ${
+                                spot.status === 'available' ? 'green' : 
+                                spot.status === 'closed' ? 'black' : 'red'
+                            };">${spot.status}</span>
+                        `);
                     });
+
+                    // Add blue marker after all spots are loaded
+                    addBlueMarker();
                 })
                 .catch(error => {
                     console.error('Error loading spots:', error);
                 });
         }
 
-        // Load spots initially
-        loadParkingSpots();
+        // Function to add a blue marker at a specific location
+        function addBlueMarker() {
+            const blueIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
 
-        // Refresh spots every 30 seconds
+            L.marker([12.2656534, 75.1296366], { icon: blueIcon })
+                .addTo(map)
+                .bindPopup("<b>Puthukai Muchilot Bhagavathi Temple</b>")
+                .openPopup();
+        }
+
+        loadParkingSpots();
         setInterval(loadParkingSpots, 5000);
 
-        // Add location button
         L.control.locate({
             position: 'bottomright',
             strings: {
@@ -149,4 +159,4 @@
         }).addTo(map);
     </script>
 </body>
-</html> 
+</html>
